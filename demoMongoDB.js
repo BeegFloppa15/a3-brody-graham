@@ -10,6 +10,8 @@ const client = new MongoClient(uri, {
   }
 });
 
+console.log(uri)
+
 const wholeDatabase = client.db("sample_mflix")
 
 const moviesCollection = wholeDatabase.collection("movies")
