@@ -16,7 +16,6 @@ const submit = async function( event ) {
   event.preventDefault()
   
   const input = document.querySelector( '#answer' ),
-  //this is userData on the server
         json = { 
           username: username,
           problem: currentProblem,
@@ -25,6 +24,7 @@ const submit = async function( event ) {
 
   const response = await fetch( '/submit', {
     method:'POST',
+    headers: {'Content-Type': 'application/json'},
     body 
   })
 
