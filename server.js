@@ -4,13 +4,13 @@ require( 'dotenv' ).config()
 const express = require( 'express' )
 const app = express()
 
-const problems = require( './javascript/problems' )
+const CHANGE = require( './javascript/problems' )
 const player = require('./javascript/player')
 
 //Importing and creating MongoDB connection
 const uri = process.env.MONGODB_URI
 const { MongoClient, ObjectId, ServerApiVersion } = require("mongodb")
-const mongodb = new MongoClient(uri, {
+const mongoConnection = new MongoClient(uri, {
         serverApi: {
           version: ServerApiVersion.v1,
           strict: true,
@@ -21,6 +21,15 @@ const mongodb = new MongoClient(uri, {
 // Temporary player data map from the old server
 // TODO: Replace this with the database schema
 const playerData = new player.Leaderboard();
+
+// Problems from the Database
+const problemSet = mongoConnection.db('math-app').collection('problems')
+
+const getRandomProblem = async function(){
+    let newProblem = await problemSet.aggregate([{$sample: { size:1}}]).next()
+    console.log('New Problem Generated: ' + newProblem)
+    return newProblem
+}
 
 // Utility Logger Middleware
 const logger = (req, res, next) => {
@@ -35,7 +44,7 @@ app.use(express.static('public'))
 
 // TODO: Handle app redirecting from login to main page, serving a problem there
 app.get("/new-problem", (req, res) =>{
-    let currentProblem = problems.randomProblem();
+    let currentProblem = CHANGE.randomProblem();
     
     let message = {
       "problem": currentProblem,
@@ -55,7 +64,7 @@ app.post('/submit', (req, res) =>{
     }
 
     // Check if the answer is correct
-    let answers = problems.problemMap.get(req.body.problem)
+    let answers = CHANGE.problemMap.get(req.body.problem)
     if (answers.includes(parseInt(req.body.answer))){
         console.log("CORRECT!")
 
@@ -63,7 +72,7 @@ app.post('/submit', (req, res) =>{
         playerData.correctAnswer(req.body.username)
 
         // Serve player data and a new problem
-        reply.problem = problems.randomProblem()
+        reply.problem = CHANGE.randomProblem()
         
     }
     // Answer is wrong
@@ -81,3 +90,4 @@ app.post('/submit', (req, res) =>{
 })
 
 app.listen(3000)
+//mongoConnection.close()
