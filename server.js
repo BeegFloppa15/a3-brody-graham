@@ -25,10 +25,19 @@ const playerData = new player.Leaderboard();
 // Problems from the Database
 const problemSet = mongoConnection.db('math-app').collection('problems')
 
-const getRandomProblem = async function(){
-    let newProblem = await problemSet.aggregate([{$sample: { size:1}}]).next()
-    console.log('New Problem Generated: ' + newProblem)
-    return newProblem
+const getRandomProblem = async function(req, res){
+    let problemCursor = problemSet.aggregate([{$sample: { size:1}}])
+    let newProblem = await problemCursor.next()
+    console.log(newProblem)
+    req.newProblem = newProblem
+
+    let message = {
+      "problem": req.newProblem.problem,
+      "leaderboard": playerData.board
+    }
+
+    res.writeHead(200, "OK", {'Content-Type': 'application/json' })
+    res.end(JSON.stringify(message))
 }
 
 // Utility Logger Middleware
@@ -43,17 +52,8 @@ app.use(logger)
 app.use(express.static('public'))
 
 // TODO: Handle app redirecting from login to main page, serving a problem there
-app.get("/new-problem", (req, res) =>{
-    let currentProblem = CHANGE.randomProblem();
-    
-    let message = {
-      "problem": currentProblem,
-      "leaderboard": playerData.board
-    }
-
-    res.writeHead(200, "OK", {'Content-Type': 'application/json' })
-    res.end(JSON.stringify(message))
-})
+app.get("/new-problem", getRandomProblem)
+//app.get("/new-problem", (req, res) =>{})
 
 app.post('/submit', (req, res) =>{
     console.log(req.body)
