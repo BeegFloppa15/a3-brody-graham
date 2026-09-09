@@ -79,7 +79,7 @@ const start = async function(event){
   game.map((element) => element.hidden = false)
 
   let problemText = await requestNewProblem()
-  problemElement.innerText = problemText
+  problemElement.innerHTML = problemText
 }
 
 function updateLeaderboard(allPlayers){
