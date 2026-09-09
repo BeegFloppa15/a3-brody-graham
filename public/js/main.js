@@ -34,9 +34,9 @@ const submit = async function( event ) {
   const data = await response.json();
   console.log( 'text:', data );
 
-  updateLeaderboard(data['all-players'])
+  //updateLeaderboard(data['all-players'])
 
-  if (data.problem !== undefined){
+  if (data.is_correct === "correct"){
     // Show "Correct" element for 2 seconds
     const displayThing = document.getElementById("result")
     clearTimeout(transitionTimer)
@@ -50,7 +50,7 @@ const submit = async function( event ) {
     }, 1000)
 
     currentProblem = data.problem
-    problemElement.innerText = data.problem
+    problemElement.innerHTML = data.problem
     
   }
   else{
@@ -63,6 +63,9 @@ const submit = async function( event ) {
     transitionTimer = setTimeout(function(){
       displayThing.style.opacity = "0%"
     }, 2000)
+
+    currentProblem = data.problem
+    problemElement.innerHTML = data.problem
   }
 
 }

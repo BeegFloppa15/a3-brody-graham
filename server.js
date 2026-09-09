@@ -41,8 +41,28 @@ const logger = (req, res, next) => {
 const getRandomProblem = async function(req, res, next){
     let problemCursor = problemSet.aggregate([{$sample: { size:1}}])
     let newProblem = await problemCursor.next()
-    console.log(newProblem)
+    
+    console.log("Sending Problem: ", newProblem.problem)
     req.newProblem = newProblem
+    next()
+}
+
+const checkAnswer = async function(req, res, next){
+    console.log(req.body)
+
+    const problemData = await problemSet.findOne({'problem': req.body.problem})
+    if (problemData.solution === parseInt(req.body.answer) 
+        || problemData.alt_solutions.includes(req.body.answer)){
+        console.log("CORRECT")
+        req.is_correct = 'correct'
+        //TODO: Modify user data in DB
+    }
+    else{
+        console.log("INCORRECT")
+        req.is_correct = 'incorrect'
+        //TODO: modify user data in DB
+    }
+
     next()
 }
 
@@ -62,9 +82,22 @@ app.get("/new-problem", (req, res) =>{
     res.end(JSON.stringify(message))
 })
 
+app.post('/submit', checkAnswer)
+app.post('/submit', getRandomProblem)
 app.post('/submit', (req, res) =>{
-    console.log(req.body)
+    let message = {
+        "problem": req.newProblem.problem,
+        "is_correct": req.is_correct,
+        "leaderboard": undefined
+    }
+    console.log("Sending Message: " + JSON.stringify(message))
 
+    res.writeHead(200, "OK", {'Content-Type': 'application/json' })
+    res.end(JSON.stringify(message))
+})
+
+/*app.post('/submit', (req, res) =>{
+    
     let reply = {
         "all-players": undefined,
         "problem": undefined
@@ -94,7 +127,7 @@ app.post('/submit', (req, res) =>{
     // Send data to the client: includes "problem" if they got it right
     res.writeHead( 200, "OK", {'Content-Type': 'application/json' })
     res.end(JSON.stringify(reply))
-})
+}) */
 
 app.listen(3000)
 //mongoConnection.close()
