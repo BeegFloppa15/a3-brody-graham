@@ -5,7 +5,6 @@ const express = require( 'express' )
 const app = express()
 
 const CHANGE = require( './javascript/problems' )
-const player = require('./javascript/player')
 
 //Importing and creating MongoDB connection
 const uri = process.env.MONGODB_URI
@@ -18,17 +17,32 @@ const mongoConnection = new MongoClient(uri, {
         }
       });
 
-// Temporary player data map from the old server
-// TODO: Replace this with the database schema
-const playerData = new player.Leaderboard();
-
 // Problems from the Database
 const problemSet = mongoConnection.db('math-app').collection('problems')
+// Player collection from the Database
+const players = mongoConnection.db('math-app').collection('players')
 
 // Utility Logger Middleware
 const logger = (req, res, next) => {
     console.log("url: " + req.url)
-    //console.log("type: " + req.headers.get('Content-Type'))
+    next()
+}
+
+/**
+ * 
+ * @param {Request} req Attatches array of top 5 users as req.topFive
+ * @param {Response} res 
+ * @param {function} next 
+ */
+const getTopFiveUsers = async function(req, res, next){
+    const topFiveAgg = [
+        {'$sort': {'correct_guesses': -1}}, 
+        {'$limit': 5}
+    ];
+
+    const topFive = await players.aggregate(topFiveAgg).toArray()
+    req.topFive = topFive
+
     next()
 }
 
@@ -47,21 +61,39 @@ const getRandomProblem = async function(req, res, next){
     next()
 }
 
+/**
+ * Middleware that checks if the player answered the question correctly
+ * @param {Request} req - Expected to have problem, answer, and username in body. 
+ * Attatches req.is_correct and req.playerData
+ * @param {Response} res 
+ * @param {function} next 
+ */
 const checkAnswer = async function(req, res, next){
     console.log(req.body)
 
     const problemData = await problemSet.findOne({'problem': req.body.problem})
+
     if (problemData.solution === parseInt(req.body.answer) 
         || problemData.alt_solutions.includes(req.body.answer)){
         console.log("CORRECT")
         req.is_correct = 'correct'
-        //TODO: Modify user data in DB
+        
+        //Modify user data in DB
+        await players.updateOne({'username': req.body.username}, 
+            {$inc: {correct_guesses: 1, total_guesses: 1}})
+        
     }
     else{
         console.log("INCORRECT")
         req.is_correct = 'incorrect'
-        //TODO: modify user data in DB
+
+        //modify user data in DB
+        await players.updateOne({'username': req.body.username}, 
+            {$inc: {total_guesses: 1}})
     }
+
+    const playerUpdatedStats = await players.findOne({'username': req.body.username})
+    req.playerData = playerUpdatedStats
 
     next()
 }
@@ -75,7 +107,7 @@ app.get("/new-problem", getRandomProblem)
 app.get("/new-problem", (req, res) =>{
     let message = {
       "problem": req.newProblem.problem,
-      "leaderboard": playerData.board
+      "leaderboard": undefined
     }
 
     res.writeHead(200, "OK", {'Content-Type': 'application/json' })
@@ -88,7 +120,7 @@ app.post('/submit', (req, res) =>{
     let message = {
         "problem": req.newProblem.problem,
         "is_correct": req.is_correct,
-        "leaderboard": undefined
+        "user_data": req.playerData
     }
     console.log("Sending Message: " + JSON.stringify(message))
 
@@ -96,38 +128,5 @@ app.post('/submit', (req, res) =>{
     res.end(JSON.stringify(message))
 })
 
-/*app.post('/submit', (req, res) =>{
-    
-    let reply = {
-        "all-players": undefined,
-        "problem": undefined
-    }
-
-    // Check if the answer is correct
-    let answers = CHANGE.problemMap.get(req.body.problem)
-    if (answers.includes(parseInt(req.body.answer))){
-        console.log("CORRECT!")
-
-        // Update Player's stats in memory
-        playerData.correctAnswer(req.body.username)
-
-        // Serve player data and a new problem
-        reply.problem = CHANGE.randomProblem()
-        
-    }
-    // Answer is wrong
-    else {
-        console.log("INCORRECT!")
-
-        // Update Player's stats in memory
-        playerData.incorrectAnswer(req.body.username)
-    }
-    reply['all-players'] = playerData.board
-
-    // Send data to the client: includes "problem" if they got it right
-    res.writeHead( 200, "OK", {'Content-Type': 'application/json' })
-    res.end(JSON.stringify(reply))
-}) */
 
 app.listen(3000)
-//mongoConnection.close()

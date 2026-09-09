@@ -106,7 +106,7 @@ async function requestNewProblem(){
   let temp = await response.json()
   currentProblem = temp.problem
   console.log(currentProblem)
-  updateLeaderboard(temp.leaderboard)
+  //updateLeaderboard(temp.leaderboard)
   return currentProblem
 }
 
