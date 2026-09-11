@@ -34,5 +34,19 @@ async function BRO_PLEEEEESE(){
     await mongoConnection.close()
 }
 
+async function getMo(){
+  req = {
+    body: {
+      username: "mofo42",
+      password: ""
+    }
+  }
 
-BRO_PLEEEEESE()
+  const players = mongoConnection.db('math-app').collection('players')
+  console.log(`finding in DB: ${req.body.username}`)
+  const targetPlayer = await players.findOne({username: req.body.username})
+  console.log(targetPlayer)
+  console.log('Attempting to Sign In: ' + targetPlayer.username)
+}
+
+getMo()

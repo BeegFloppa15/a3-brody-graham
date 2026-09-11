@@ -3,8 +3,8 @@ require( 'dotenv' ).config()
 //Importing and creating server
 const express = require( 'express' )
 const app = express()
-
-const CHANGE = require( './javascript/problems' )
+const {unauthRedirect, attemptLogin} = require('./javascript/auth')
+const cookie = require('cookie-session')
 
 //Importing and creating MongoDB connection
 const uri = process.env.MONGODB_URI
@@ -53,6 +53,7 @@ const getTopFiveUsers = async function(req, res, next){
  * @param {function} next 
  */
 const getRandomProblem = async function(req, res, next){
+    console.log("We shouldnt' reach this?!?!")
     let problemCursor = problemSet.aggregate([{$sample: { size:1}}])
     let newProblem = await problemCursor.next()
     
@@ -98,11 +99,25 @@ const checkAnswer = async function(req, res, next){
     next()
 }
 
+app.use( express.urlencoded({ extended:true }) )
 app.use(express.json())
 app.use(logger)
-app.use(express.static('public'))
+
+app.use(cookie({
+    name: 'session',
+    keys: [
+        process.env.KEY1,
+        process.env.KEY2,
+        process.env.KEY3,
+        process.env.KEY4
+    ]
+}))
+
+
 
 // TODO: Handle app redirecting from login to main page, serving a problem there
+app.get('/', unauthRedirect)
+app.get('/index.html', unauthRedirect)
 app.get("/new-problem", getRandomProblem)
 app.get("/new-problem", (req, res) =>{
     let message = {
@@ -112,6 +127,28 @@ app.get("/new-problem", (req, res) =>{
 
     res.writeHead(200, "OK", {'Content-Type': 'application/json' })
     res.end(JSON.stringify(message))
+})
+
+app.use('/login.html', (req, res, next)=>{
+    if (req.session.login === true){
+        console.log('User logged in, sending to home page')
+        res.redirect('../index.html')
+    }
+    else
+        console.log('Log In Required')
+        next()
+})
+app.post('/login/attempt', express.json(), async function (req, res, next){
+    console.log('Login Attempted!')
+    console.log(req.body)
+    await attemptLogin(mongoConnection, req, res, next)
+    next()
+})
+
+app.use('/logout', (req, res, next) =>{
+    console.log('attempting to log out user')
+    req.session.login = false
+    res.redirect('/login.html')
 })
 
 app.post('/submit', checkAnswer)
@@ -128,5 +165,6 @@ app.post('/submit', (req, res) =>{
     res.end(JSON.stringify(message))
 })
 
+app.use(express.static('public'))
 
 app.listen(3000)
