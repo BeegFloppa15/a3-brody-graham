@@ -14,13 +14,18 @@ const attemptLogin = async function (mongoConnection, req, res, next) {
     const targetPlayer = await players.findOne({username: req.body.username})
     console.log('Attempting to Sign In: ' + targetPlayer.username)
 
+    if (targetPlayer === null){
+        console.log("NO USER FOUND: LOGIN FAILED")
+    }
+
     if (targetPlayer.password === undefined || req.body.password == targetPlayer.password){
         console.log("LOGIN SUCCESSFUL")
         req.session.login = true
+        req.session.username = req.body.username
         res.redirect('../index.html')
     }
     else{
-        console.log('LOGIN FAILED')
+        console.log('INCORRECT PASSOWRD: LOGIN FAILED')
     }
 }
 
@@ -40,4 +45,10 @@ const unauthRedirect = function(req, res, next){
     }
 }
 
-module.exports = {unauthRedirect, attemptLogin}
+const logout = function(req, res, next){
+    console.log('attempting to log out user')
+    req.session = null
+    res.redirect('/login.html')
+}
+
+module.exports = {unauthRedirect, attemptLogin, logout}

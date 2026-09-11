@@ -3,7 +3,7 @@ require( 'dotenv' ).config()
 //Importing and creating server
 const express = require( 'express' )
 const app = express()
-const {unauthRedirect, attemptLogin} = require('./javascript/auth')
+const {unauthRedirect, attemptLogin, logout} = require('./javascript/auth')
 const cookie = require('cookie-session')
 
 //Importing and creating MongoDB connection
@@ -118,17 +118,6 @@ app.use(cookie({
 // TODO: Handle app redirecting from login to main page, serving a problem there
 app.get('/', unauthRedirect)
 app.get('/index.html', unauthRedirect)
-app.get("/new-problem", getRandomProblem)
-app.get("/new-problem", (req, res) =>{
-    let message = {
-      "problem": req.newProblem.problem,
-      "leaderboard": undefined
-    }
-
-    res.writeHead(200, "OK", {'Content-Type': 'application/json' })
-    res.end(JSON.stringify(message))
-})
-
 app.use('/login.html', (req, res, next)=>{
     if (req.session.login === true){
         console.log('User logged in, sending to home page')
@@ -145,12 +134,22 @@ app.post('/login/attempt', express.json(), async function (req, res, next){
     next()
 })
 
-app.use('/logout', (req, res, next) =>{
-    console.log('attempting to log out user')
-    req.session.login = false
-    res.redirect('/login.html')
+app.use('/logout', logout)
+
+app.get("/new-problem", getRandomProblem)
+app.get("/new-problem", (req, res) =>{
+    let message = {
+      "problem": req.newProblem.problem,
+      "leaderboard": undefined
+    }
+
+    res.writeHead(200, "OK", {'Content-Type': 'application/json' })
+    res.end(JSON.stringify(message))
 })
 
+
+
+/*
 app.post('/submit', checkAnswer)
 app.post('/submit', getRandomProblem)
 app.post('/submit', (req, res) =>{
@@ -164,6 +163,7 @@ app.post('/submit', (req, res) =>{
     res.writeHead(200, "OK", {'Content-Type': 'application/json' })
     res.end(JSON.stringify(message))
 })
+    */
 
 app.use(express.static('public'))
 
