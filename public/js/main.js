@@ -1,9 +1,14 @@
 // FRONT-END (CLIENT) JAVASCRIPT HERE
-// Declaring html element here so we can access it in all fucntions (i think)
-let ul = null;
+// Declaring html element here so we can access it in all fucntions
 let currentProblem = null;
 let problemElement = null;
 let leaderboardTable = null;
+let correctDisplay;
+let totalDisplay;
+let accuracy;
+let usernameDisplay
+let answerProgress
+
 let username = ""
 let transitionTimer
 const decimalFormat = new Intl.NumberFormat('en-US', {style: 'percent'})
@@ -17,11 +22,11 @@ const submit = async function( event ) {
   
   const input = document.querySelector( '#answer' ),
         json = { 
-          username: username,
           problem: currentProblem,
           answer: input.value },
         body = JSON.stringify( json )
 
+  answerProgress.hidden = false
   const response = await fetch( '/submit', {
     method:'POST',
     headers: {'Content-Type': 'application/json'},
@@ -35,6 +40,8 @@ const submit = async function( event ) {
   console.log( 'text:', data );
 
   //updateLeaderboard(data['all-players'])
+  answerProgress.hidden = true
+  updateUserInfoDisplay(data.user_data)
 
   if (data.is_correct === "correct"){
     // Show "Correct" element for 2 seconds
@@ -120,20 +127,36 @@ function back(){
   game.map((element) => element.hidden = true)
 }
 
-window.onload = function() {
-  const startButton = document.querySelector('#start')
-  startButton.onclick = start
-  const backButton = document.querySelector("#back")
-  backButton.onclick = back
+/**
+ * 
+ * @param {JSON} userData 
+ */
+function updateUserInfoDisplay(userData){
+  usernameDisplay.innerText = userData.username
+  correctDisplay.innerText = `Correct Guesses: ${userData.correct_guesses}`
+  totalDisplay.innerText = `Total Guesses: ${userData.total_guesses}`
+  accuracy.innerText = `Accuracy: ${decimalFormat.format(userData.correct_guesses / userData.total_guesses)}`
 
+}
+
+window.onload = async function() {
   const submitButton = document.getElementById('submit')
   submitButton.onclick = submit
 
   problemElement = document.getElementById('problem')
-
   leaderboardTable = document.querySelector('#leaderboard-players')
+  usernameDisplay = document.getElementById('username-display')
+  correctDisplay = document.getElementById('correct-count')
+  totalDisplay = document.getElementById('total-count')
+  accuracy = document.getElementById('accuracy')
+  answerProgress = document.getElementById('answer-waiting')
+  
+  // Get User Data and a problem to display
+  const response = await fetch('/startgame', {method: 'GET'})
+  const gameStartData = await response.json()
+  console.log(gameStartData)
 
-  //Creating html element and adding it to the body
-  ul = document.createElement('ul');
-  document.body.appendChild(ul);
+  updateUserInfoDisplay(gameStartData.userData)
+  problemElement.innerHTML = gameStartData.newProblem
+  currentProblem = gameStartData.newProblem
 }

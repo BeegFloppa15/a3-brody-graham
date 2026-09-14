@@ -8,7 +8,7 @@ const cookie = require('cookie-session')
 
 //Importing and creating MongoDB connection
 const uri = process.env.MONGODB_URI
-const { MongoClient, ObjectId, ServerApiVersion } = require("mongodb")
+const { MongoClient, ObjectId, ServerApiVersion, EJSON } = require("mongodb")
 const mongoConnection = new MongoClient(uri, {
         serverApi: {
           version: ServerApiVersion.v1,
@@ -53,11 +53,9 @@ const getTopFiveUsers = async function(req, res, next){
  * @param {function} next 
  */
 const getRandomProblem = async function(req, res, next){
-    console.log("We shouldnt' reach this?!?!")
     let problemCursor = problemSet.aggregate([{$sample: { size:1}}])
     let newProblem = await problemCursor.next()
     
-    console.log("Sending Problem: ", newProblem.problem)
     req.newProblem = newProblem
     next()
 }
@@ -80,7 +78,7 @@ const checkAnswer = async function(req, res, next){
         req.is_correct = 'correct'
         
         //Modify user data in DB
-        await players.updateOne({'username': req.body.username}, 
+        await players.updateOne({'username': req.session.username}, 
             {$inc: {correct_guesses: 1, total_guesses: 1}})
         
     }
@@ -89,11 +87,11 @@ const checkAnswer = async function(req, res, next){
         req.is_correct = 'incorrect'
 
         //modify user data in DB
-        await players.updateOne({'username': req.body.username}, 
+        await players.updateOne({'username': req.session.username}, 
             {$inc: {total_guesses: 1}})
     }
 
-    const playerUpdatedStats = await players.findOne({'username': req.body.username})
+    const playerUpdatedStats = await players.findOne({'username': req.session.username})
     req.playerData = playerUpdatedStats
 
     next()
@@ -151,9 +149,48 @@ app.get("/new-problem", (req, res) =>{
     res.end(JSON.stringify(message))
 })
 
+/**
+ * 
+ * @param {*} req A request. Access user's data with req.userInfo
+ * @param {*} res 
+ * @param {*} next 
+ */
+const getCurrentUserStats =  async function(req, res, next){
+    if (req.session.login){
+        const mongoUser = await players.findOne({username: req.session.username})
+        
+        if (mongoUser !== undefined){
+            let body = {
+                username: mongoUser.username,
+                firstname: mongoUser.firstname,
+                lastname: mongoUser.lastname,
+                correct_guesses: mongoUser.correct_guesses,
+                total_guesses: mongoUser.total_guesses
+            }
+            console.log(body)
+            req.userInfo = body
+            next()
+        }
+        else{
+            console.log('Horrible Error: Could not get stats of current user')
+            res.writeHead(400, 'Could not find user to populate stats')
+        }
+    }
+}
+
+app.get('/startGame', getRandomProblem)
+app.get('/startGame', getCurrentUserStats)
+app.get('/startgame', (req, res) =>{
+    let message = {
+        newProblem: req.newProblem.problem,
+        userData: req.userInfo
+    }
+    res.writeHead(200, 'OK', {'Content-Type': 'application/json'})
+    res.end(JSON.stringify(message))
+})
 
 
-/*
+
 app.post('/submit', checkAnswer)
 app.post('/submit', getRandomProblem)
 app.post('/submit', (req, res) =>{
@@ -162,12 +199,11 @@ app.post('/submit', (req, res) =>{
         "is_correct": req.is_correct,
         "user_data": req.playerData
     }
-    console.log("Sending Message: " + JSON.stringify(message))
+    //console.log("Sending Message: " + JSON.stringify(message))
 
     res.writeHead(200, "OK", {'Content-Type': 'application/json' })
     res.end(JSON.stringify(message))
 })
-    */
 
 app.use(express.static('public'))
 

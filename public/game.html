@@ -29,38 +29,31 @@
     </dialog>
     <header class="fill">
       <nav>
-        <button>Username</button>
+        <button id="username-display">Username</button>
         <div class="max"></div>
-        <p>Correct Guesses: 15</p>
-        <P>Total Guesses: 30</P>
-        <p>Accuracy: 50%</p>
+        <p id="correct-count">Correct Guesses:</p>
+        <P id="total-count">Total Guesses:</P>
+        <p id="accuracy">Accuracy:</p>
         <div class="max"></div>
         <button data-ui="#logout-dialog">Logout</button>
       </nav>
     </header>
     <main>
-      <article class="small-round padding border medium no-padding">
-        <div class="padding fill absolute center middle">
+      <section class="padding border responsive">
+        <div class="padding center-align">
           <h1>Solve The Problem</h1>
           <form>
-            <p id="problem">???</p>
-            <input type='number' id='answer' value='' autocomplete='off'>
+            <h3 id="problem" class="fill medium" style="font-family: 'Times New Roman', Times, serif;">???</h3>
+            <div class="field border prefix">
+              <progress id="answer-waiting" class="circle indeterminate " value="50" max="100" hidden></progress>
+              <input id="answer" type="number">
+              <output>Answer Here</output>
+            </div>
             <button id ='submit'>submit</button>
           </form>
-          <div id="result">
+          <div id="result" class="primary-container">
             <h1>Correct!</h1>
           </div>
-        </div>
-      </article>
-      <section class="padding fill center">
-        <h1>Solve The Problem</h1>
-        <form>
-          <p id="problem">???</p>
-          <input type='number' id='answer' value='' autocomplete='off'>
-          <button id ='submit'>submit</button>
-        </form>
-        <div id="result">
-          <h1>Correct!</h1>
         </div>
       </section>
       <section class="game-element">
