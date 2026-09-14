@@ -7,28 +7,52 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-    <link rel='stylesheet' href='css/main.css' />
+    <link href="https://cdn.jsdelivr.net/npm/beercss@5.0.3/dist/cdn/beer.min.css" rel="stylesheet">
+    <link href="css/colors.css" rel="stylesheet">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/beercss@5.0.3/dist/cdn/beer.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/material-dynamic-colors@1.1.4/dist/cdn/material-dynamic-colors.min.js"></script>
     
     <!-- get rid of favicon error -->
     <link rel='icon' href='data:;base64,iVBORw0KGgo=' />
   </head>
   <body>
-    <header>
-      <div>
-        <h3>Username</h3>
-        <p>First Last</p>
+    <dialog id="logout-dialog">
+      <h5>Log Out</h5>
+      <div>Are you sure you want to log out?
       </div>
-      <div class="stat-display">
-        <div class="ratio">
-          <p>Correct Guesses: 5000</p>
-          <p>Total Guesses: 5000</p>
-        </div>
+      <nav class="right-align no-space">
+        <button class="transparent link" data-ui="#logout-dialog">Cancel</button>
+        <a href="logout">
+          <button class="transparent link">Logout</button>
+        </a>
+      </nav>
+    </dialog>
+    <header class="fill">
+      <nav>
+        <button>Username</button>
+        <div class="max"></div>
+        <p>Correct Guesses: 15</p>
+        <P>Total Guesses: 30</P>
         <p>Accuracy: 50%</p>
-      </div>
-      <p id="usernameDisplay" class="game-element"></p>
+        <div class="max"></div>
+        <button data-ui="#logout-dialog">Logout</button>
+      </nav>
     </header>
     <main>
-      <section class="game-element">
+      <article class="small-round padding border medium no-padding">
+        <div class="padding fill absolute center middle">
+          <h1>Solve The Problem</h1>
+          <form>
+            <p id="problem">???</p>
+            <input type='number' id='answer' value='' autocomplete='off'>
+            <button id ='submit'>submit</button>
+          </form>
+          <div id="result">
+            <h1>Correct!</h1>
+          </div>
+        </div>
+      </article>
+      <section class="padding fill center">
         <h1>Solve The Problem</h1>
         <form>
           <p id="problem">???</p>

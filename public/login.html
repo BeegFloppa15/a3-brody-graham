@@ -10,7 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/beercss@5.0.3/dist/cdn/beer.min.css" rel="stylesheet">
     <link href="css/colors.css" rel="stylesheet">
     <script type="module" src="https://cdn.jsdelivr.net/npm/beercss@5.0.3/dist/cdn/beer.min.js"></script>
-  <script type="module" src="https://cdn.jsdelivr.net/npm/material-dynamic-colors@1.1.4/dist/cdn/material-dynamic-colors.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/material-dynamic-colors@1.1.4/dist/cdn/material-dynamic-colors.min.js"></script>
     
     <!-- get rid of favicon error -->
     <link rel='icon' href='data:;base64,iVBORw0KGgo=' />
@@ -21,20 +21,25 @@
         <h6 class="max center-align">Log In</h6>
       </nav>
     </header>
-    <article class="medium no-padding middle-align center-align">
-      <div class="padding">
-        <form action="login/attempt" method="post">
-          <div class="field label border">
-            <input type="text" name="username" aria-label="Username Entry" id = "username-entry">
-            <label>Username</label>
-          </div>
-          <div class="field label border">
-            <input type="password" name="password" aria-label="Password Entry" id = "password-entry">
-            <label>Password</label>
-          </div>
-          <button type="submit" value="Log In" id="login" class="large" style="margin: 18px">Log In</button>
-        </form>
-      </div>
-    </article>
+    <main class="center-align">
+      <article class="container large-width">
+        <div class="padding">
+          <form action="login/attempt" method="post">
+            <div class="field label border">
+              <input type="text" name="username" aria-label="Username Entry" id = "username-entry">
+              <label>Username</label>
+            </div>
+            <div class="field label border">
+              <input type="password" name="password" aria-label="Password Entry" id = "password-entry">
+              <label>Password</label>
+            </div>
+            <button type="submit" value="Log In" id="login" class="large align-center" style="margin: 18px">Log In</button>
+          </form>
+        </div>
+      </article>
+      <article class="responsive center-align large-width"> 
+        No Account? <a>Register Here</a>
+      </article>
+    </main>
   </body>
 </html>
