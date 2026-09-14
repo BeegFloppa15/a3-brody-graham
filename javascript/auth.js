@@ -22,7 +22,7 @@ const attemptLogin = async function (mongoConnection, req, res, next) {
         console.log("LOGIN SUCCESSFUL")
         req.session.login = true
         req.session.username = req.body.username
-        res.redirect('../index.html')
+        res.redirect('../game.html')
     }
     else{
         console.log('INCORRECT PASSOWRD: LOGIN FAILED')

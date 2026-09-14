@@ -35,15 +35,22 @@ form{
 
 header{
   display: grid;
-  grid-template-columns: 20% 60% 20%;
+  grid-template-columns: 15% 60% 25%;
   grid-template-rows: 100%;
+  column-gap: 3%;
   min-height: 50px;
   padding: 10px 10px;
   margin: 0 0;
   background-color: var(--header-color);
 
-  p{
-    text-align: right;
+  .stat-display{
+     display: grid;
+     grid-template-columns: 70% 30%;
+
+     .ratio{
+       grid-template-rows: 50% 50%;
+       
+     }
   }
 }
 

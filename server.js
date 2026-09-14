@@ -114,19 +114,23 @@ app.use(cookie({
 }))
 
 
-
-// TODO: Handle app redirecting from login to main page, serving a problem there
+// Redirect user to login if they aren't loggedd in
 app.get('/', unauthRedirect)
 app.get('/index.html', unauthRedirect)
+app.get('/game.html', unauthRedirect)
+
+// Redirect user to game page if they are logged in
 app.use('/login.html', (req, res, next)=>{
     if (req.session.login === true){
         console.log('User logged in, sending to home page')
-        res.redirect('../index.html')
+        res.redirect('../game.html')
     }
     else
         console.log('Log In Required')
         next()
 })
+
+
 app.post('/login/attempt', express.json(), async function (req, res, next){
     console.log('Login Attempted!')
     console.log(req.body)

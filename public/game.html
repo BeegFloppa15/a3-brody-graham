@@ -13,6 +13,48 @@
     <link rel='icon' href='data:;base64,iVBORw0KGgo=' />
   </head>
   <body>
-
+    <header>
+      <div>
+        <h3>Username</h3>
+        <p>First Last</p>
+      </div>
+      <div class="stat-display">
+        <div class="ratio">
+          <p>Correct Guesses: 5000</p>
+          <p>Total Guesses: 5000</p>
+        </div>
+        <p>Accuracy: 50%</p>
+      </div>
+      <p id="usernameDisplay" class="game-element"></p>
+    </header>
+    <main>
+      <section class="game-element">
+        <h1>Solve The Problem</h1>
+        <form>
+          <p id="problem">???</p>
+          <input type='number' id='answer' value='' autocomplete='off'>
+          <button id ='submit'>submit</button>
+        </form>
+        <div id="result">
+          <h1>Correct!</h1>
+        </div>
+      </section>
+      <section class="game-element">
+        <h1>Leaderboard</h1>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Rank</th>
+              <th scope="col">Username</th>
+              <th scope="col">Correct Guesses</th>
+              <th scope="col">Total Guesses</th>
+              <th scope="col">Accuracy</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-players">
+          </tbody>
+        </table>
+      </section>
+    </main>
   </body>
 </html>
