@@ -108,12 +108,16 @@ app.use(cookie({
         process.env.KEY2,
         process.env.KEY3,
         process.env.KEY4
-    ]
+    ],
+    maxAge: 1000 * 60 * 60  // Session expires after 1 hour
 }))
 
 
 // Redirect user to login if they aren't loggedd in
 app.get('/', unauthRedirect)
+app.get('/', (req, res) =>{
+    res.redirect('/game.html')
+})
 app.get('/index.html', unauthRedirect)
 app.get('/game.html', unauthRedirect)
 
@@ -189,8 +193,6 @@ app.get('/startgame', (req, res) =>{
     res.end(JSON.stringify(message))
 })
 
-
-
 app.post('/submit', checkAnswer)
 app.post('/submit', getRandomProblem)
 app.post('/submit', (req, res) =>{
@@ -204,6 +206,15 @@ app.post('/submit', (req, res) =>{
     res.writeHead(200, "OK", {'Content-Type': 'application/json' })
     res.end(JSON.stringify(message))
 })
+
+app.get('/getPlayerProfile', getCurrentUserStats)
+app.get('/getPlayerProfile', (req, res, next)=>{
+    res.writeHead(200, 'OK', {'Content-Type': 'application/json'})
+    res.end(JSON.stringify(req.userInfo))
+})
+
+//TODO: Implement User modifying profile
+//app.post('profile/modify')
 
 app.use(express.static('public'))
 

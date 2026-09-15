@@ -29,6 +29,14 @@ const attemptLogin = async function (mongoConnection, req, res, next) {
     }
 }
 
+const modifyUser = async function (mongoConnection, req, res, next){
+    const players = mongoConnection.db('math-app').collection('players')
+    const targetPlayer = await players.findOne({username: req.session.username})
+
+    //TODO: Test if new Username equals another player's username
+    //TODO: Actually Modify User's data
+}
+
 /**
  * 
  * @param {Request} req 
