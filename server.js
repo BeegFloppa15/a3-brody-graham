@@ -3,12 +3,12 @@ require( 'dotenv' ).config()
 //Importing and creating server
 const express = require( 'express' )
 const app = express()
-const {unauthRedirect, attemptLogin, logout} = require('./javascript/auth')
+const {unauthRedirect, attemptLogin, logout, modifyUser} = require('./javascript/auth')
 const cookie = require('cookie-session')
 
 //Importing and creating MongoDB connection
 const uri = process.env.MONGODB_URI
-const { MongoClient, ObjectId, ServerApiVersion, EJSON } = require("mongodb")
+const { MongoClient, ObjectId, ServerApiVersion } = require("mongodb")
 const mongoConnection = new MongoClient(uri, {
         serverApi: {
           version: ServerApiVersion.v1,
@@ -120,6 +120,7 @@ app.get('/', (req, res) =>{
 })
 app.get('/index.html', unauthRedirect)
 app.get('/game.html', unauthRedirect)
+app.get('/changeInfo.html', unauthRedirect)
 
 // Redirect user to game page if they are logged in
 app.use('/login.html', (req, res, next)=>{
@@ -214,7 +215,9 @@ app.get('/getPlayerProfile', (req, res, next)=>{
 })
 
 //TODO: Implement User modifying profile
-//app.post('profile/modify')
+app.post('/profile/modify', express.json(), (req, res, next) =>{
+    modifyUser(mongoConnection, req, res, next)
+})
 
 app.use(express.static('public'))
 

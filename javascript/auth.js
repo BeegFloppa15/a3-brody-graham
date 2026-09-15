@@ -29,12 +29,49 @@ const attemptLogin = async function (mongoConnection, req, res, next) {
     }
 }
 
+/**
+ * 
+ * @param {MongoClient} mongoConnection 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 const modifyUser = async function (mongoConnection, req, res, next){
     const players = mongoConnection.db('math-app').collection('players')
     const targetPlayer = await players.findOne({username: req.session.username})
 
-    //TODO: Test if new Username equals another player's username
+    //Test if new Username equals another player's username
+    const duplicate = await players.findOne({username: req.body.username})
+    if (duplicate !== null && duplicate.username !== targetPlayer.username){
+        console.log('ERROR: This username is already used')
+        res.attempData = req.body
+        res.redirect('/changeinfo.html?user=duplicate')
+    }
     //TODO: Actually Modify User's data
+    else{
+        console.log('ATTEMPTING TO MODIFY USER DATA')
+        let update = {$set: {username: req.body.username}, $unset:{}}
+        if (req.body.firstname === '')
+            update.$unset.firstname = ''
+        else
+            update.$set.firstname = req.body.firstname
+        
+        if (req.body.lastname === '')
+            update.$unset.lastname = ''
+        else
+            update.$set.lastname = req.body.lastname
+
+        if (req.body.password === '')
+            update.$unset.password = ''
+        else
+            update.$set.password = req.body.password
+        
+        console.log(update)
+
+        await players.updateOne({username: req.session.username}, update)
+        req.session.username = req.body.username
+        res.redirect('/game.html')
+    }
 }
 
 /**
@@ -59,4 +96,4 @@ const logout = function(req, res, next){
     res.redirect('/login.html')
 }
 
-module.exports = {unauthRedirect, attemptLogin, logout}
+module.exports = {unauthRedirect, attemptLogin, logout, modifyUser}
