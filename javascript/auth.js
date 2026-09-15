@@ -16,6 +16,7 @@ const attemptLogin = async function (mongoConnection, req, res, next) {
 
     if (targetPlayer === null){
         console.log("NO USER FOUND: LOGIN FAILED")
+        //TODO: redirect with fail message
     }
 
     if (targetPlayer.password === undefined || req.body.password == targetPlayer.password){
@@ -26,6 +27,7 @@ const attemptLogin = async function (mongoConnection, req, res, next) {
     }
     else{
         console.log('INCORRECT PASSOWRD: LOGIN FAILED')
+        //TODO: Redirect with fail message
     }
 }
 
@@ -47,7 +49,8 @@ const modifyUser = async function (mongoConnection, req, res, next){
         res.attempData = req.body
         res.redirect('/changeinfo.html?user=duplicate')
     }
-    //TODO: Actually Modify User's data
+    
+    //Actually Modify User's data
     else{
         console.log('ATTEMPTING TO MODIFY USER DATA')
         let update = {$set: {username: req.body.username}, $unset:{}}

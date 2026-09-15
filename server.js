@@ -218,6 +218,18 @@ app.get('/getPlayerProfile', (req, res, next)=>{
 app.post('/profile/modify', express.json(), (req, res, next) =>{
     modifyUser(mongoConnection, req, res, next)
 })
+//TODO: Implement User Deleting Profile
+app.delete('/profile/delete', async function(req, res){
+    const players = mongoConnection.db('math-app').collection('players')
+    const targetPlayer = await players.deleteOne({username: req.session.username})
+    req.session = null
+    console.log(targetPlayer)
+    if (targetPlayer.acknowledged === true){
+        res.writeHead(200, 'OK')
+        res.send()
+    }
+
+})
 
 app.use(express.static('public'))
 

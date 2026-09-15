@@ -42,9 +42,19 @@
               <input type="password" name="password" aria-label="Password Entry" id = "password-entry">
               <output>Change Password</output>
             </div>
-            <button type="submit" value="Update" id="submit" class="large align-center" style="margin: 18px">Modify</button>
+            
+            <button type="submit" value="Update" id="submit" class="large align-left" style="margin: 18px">Modify</button>
           </form>
+          <button class="large align-left error" data-ui="#delete-dialog">Delete Profile</button>
         </div>
       </article>
+      <dialog id="delete-dialog" >
+        <h5>Confirm Profile Deletion</h5>
+        <div id="delete-warning">Are you sure you want to delete your profile and all associated data? <strong>This cannot be undone.</strong></div>
+        <nav class="right-align no-space">
+          <button data-ui="#delete-dialog" class="transparent link">Cancel</button>
+          <button id="confirm-delete" class="error">Delete</button>
+        </nav>
+      </dialog>
   </body>
 </html>

@@ -24,10 +24,21 @@ window.onload = async function(){
         usernameDiv.innerHTML = `<input type="text" name="username" value="" aria-label="Username Modify" id = "username-entry">
               <output class="invalid">That username is already being used. Please try again.</output>`
     }
+    // Set field values to existing values if they exist
     usernameEntry.value = userData.username
     if (userData.firstname !== undefined)
         firstnameEntry.value = userData.firstname
     if (userData.lastname !== undefined)
         lastnameEntry.value = userData.lastname
     
+    document.getElementById('delete-warning').innerHTML = `Are you sure you want to delete the profile <strong>${userData.username}</strong> and all associated data? <br> <strong>This cannot be undone.</strong>`
+
+    document.getElementById('confirm-delete').onclick = deleteUser
+}
+
+async function deleteUser(){
+    const attempt = await fetch('/profile/delete', {method: 'DELETE'})
+    if (attempt.ok){
+        window.location.href = '/login.html'
+    }
 }

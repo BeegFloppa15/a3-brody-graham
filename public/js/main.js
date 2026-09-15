@@ -8,6 +8,8 @@ let totalDisplay;
 let accuracy;
 let usernameDisplay
 let answerProgress
+let correctResult
+let incorrectResult
 
 let username = ""
 let transitionTimer
@@ -19,6 +21,9 @@ const submit = async function( event ) {
   // this was the original browser behavior and still
   // remains to this day
   event.preventDefault()
+
+  correctResult.classList.remove('active')
+  incorrectResult.classList.remove('active')
   
   const input = document.querySelector( '#answer' ),
         json = { 
@@ -45,16 +50,12 @@ const submit = async function( event ) {
 
   if (data.is_correct === "correct"){
     // Show "Correct" element for 2 seconds
-    const displayThing = document.getElementById("result")
     clearTimeout(transitionTimer)
-    displayThing.innerHTML = "<h1>Correct!</h1>"
+    correctResult.classList.add('active')
 
-    displayThing.style.transition= ""
-    displayThing.style.opacity = "100%"
-    displayThing.style.backgroundColor = "green";
     transitionTimer = setTimeout(function(){
-      displayThing.style.opacity = "0%"
-    }, 1000)
+      correctResult.classList.remove('active')
+    }, 2500)
 
     currentProblem = data.problem
     problemElement.innerHTML = data.problem
@@ -63,13 +64,11 @@ const submit = async function( event ) {
   else{
     // Show "incorrect" element for 2 seconds
     clearTimeout(transitionTimer)
-    const displayThing = document.getElementById("result")
-    displayThing.innerHTML = "<h1>Incorrect!</h1>"
-    displayThing.style.opacity = "100%"
-    displayThing.style.backgroundColor = "red";
+    incorrectResult.classList.add('active')
+
     transitionTimer = setTimeout(function(){
-      displayThing.style.opacity = "0%"
-    }, 2000)
+      incorrectResult.classList.remove('active')
+    }, 2500)
 
     currentProblem = data.problem
     problemElement.innerHTML = data.problem
@@ -150,6 +149,8 @@ window.onload = async function() {
   totalDisplay = document.getElementById('total-count')
   accuracy = document.getElementById('accuracy')
   answerProgress = document.getElementById('answer-waiting')
+  correctResult = document.getElementById('correct-result')
+  incorrectResult = document.getElementById('incorrect-result')
   
   // Get User Data and a problem to display
   const response = await fetch('/startgame', {method: 'GET'})
