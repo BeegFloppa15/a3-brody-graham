@@ -4,6 +4,7 @@
     <title>Play Math Maker!</title>
     <meta charset='utf-8' />
     <script src='js/main.js'></script>
+    <meta name="description" content="Main game page of Math Maker. Solve math problems!">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
@@ -45,10 +46,10 @@
         <div class="padding center-align">
           <h1>Solve The Problem</h1>
           <form>
-            <h3 id="problem" class="fill medium" style="font-family: 'Times New Roman', Times, serif;">???</h3>
+            <p id="problem" class="fill padding" style="font-family: 'Times New Roman', Times, serif; font-size: 64px;">???<p>
             <div class="field border prefix">
               <progress id="answer-waiting" class="circle indeterminate " value="50" max="100" hidden></progress>
-              <input id="answer" type="number">
+              <input id="answer" type="number" aria-label="Answer Here">
               <output>Answer Here</output>
             </div>
             <button id ='submit'>submit</button>
@@ -57,23 +58,6 @@
       </section>
       <div id="correct-result" class="snackbar primary">Correct!</div>
       <div id="incorrect-result" class="snackbar error">Incorrect!</div>
-      <!-- TODO: Remove Leaderboard -->
-      <section class="game-element">
-        <h1>Leaderboard</h1>
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Rank</th>
-              <th scope="col">Username</th>
-              <th scope="col">Correct Guesses</th>
-              <th scope="col">Total Guesses</th>
-              <th scope="col">Accuracy</th>
-            </tr>
-          </thead>
-          <tbody id="leaderboard-players">
-          </tbody>
-        </table>
-      </section>
     </main>
   </body>
 </html>

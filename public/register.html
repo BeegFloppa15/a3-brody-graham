@@ -3,6 +3,7 @@
   <head>
     <title>Register - Math Maker</title>
     <meta charset='utf-8' />
+    <meta name="description" content="Register your new Math Maker account, then log in.">
     <script src='js/register.js'></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,30 +22,32 @@
             <a href="login.html"><button>Back to Login</button></a>
         </nav>
     </header>
-    <article class="container large-width center">
-        <div class="padding">
-          <form action="profile/create" method="post">
-            <h4 class="center-align">Register to play Math Maker!</h4>
-            <div id="entire-username-div" class="field border required">
-              <input type="text" name="username" value="" aria-label="Username Entry" id = "username-entry">
-              <output id="username-error">Username</output>
-            </div>
-            <div class="field border">
-              <input type="text" name="firstname" value="" aria-label="First Name Entry" id = "firstname-entry">
-              <output>First Name</output>
-            </div>
-            <div class="field border">
-              <input type="text" name="lastname" value="" aria-label="Last Name Entry" id = "lastname-entry">
-              <output>Last Name</output>
-            </div>
-            <div class="field border">
-              <input type="password" name="password" aria-label="Password Entry" id = "password-entry">
-              <output>Password</output>
-            </div>
-            
-            <button type="submit" value="Update" id="submit" class="large align-left" style="margin: 18px">Register and Log In!</button>
-          </form>
-        </div>
-      </article>
+    <main>
+      <article class="container large-width center">
+          <div class="padding">
+            <form action="profile/create" method="post">
+              <h4 class="center-align">Register to play Math Maker!</h4>
+              <div id="entire-username-div" class="field border required">
+                <input type="text" name="username" value="" aria-label="Username Entry" id = "username-entry">
+                <output id="username-error">Username</output>
+              </div>
+              <div class="field border">
+                <input type="text" name="firstname" value="" aria-label="First Name Entry" id = "firstname-entry">
+                <output>First Name</output>
+              </div>
+              <div class="field border">
+                <input type="text" name="lastname" value="" aria-label="Last Name Entry" id = "lastname-entry">
+                <output>Last Name</output>
+              </div>
+              <div class="field border">
+                <input type="password" name="password" aria-label="Password Entry" id = "password-entry">
+                <output>Password</output>
+              </div>
+              
+              <button type="submit" value="Update" id="submit" class="large align-left" style="margin: 18px">Register and Log In!</button>
+            </form>
+          </div>
+        </article>
+      </main>
   </body>
 </html>

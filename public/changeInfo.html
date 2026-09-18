@@ -3,6 +3,7 @@
   <head>
     <title>Play Math Maker!</title>
     <meta charset='utf-8' />
+    <meta name="description" content="Form for users to change their personal data.">
     <script src='js/changeInfo.js'></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +22,8 @@
             <a href="game.html"><button>Back</button></a>
         </nav>
     </header>
-    <article class="container large-width center">
+    <main>
+      <article class="container large-width center">
         <div class="padding">
           <form action="profile/modify" method="post">
             <h4 class="center-align">Change Profile Info</h4>
@@ -48,6 +50,7 @@
           <button class="large align-left error" data-ui="#delete-dialog">Delete Profile</button>
         </div>
       </article>
+    </main>
       <dialog id="delete-dialog" >
         <h5>Confirm Profile Deletion</h5>
         <div id="delete-warning">Are you sure you want to delete your profile and all associated data? <strong>This cannot be undone.</strong></div>
