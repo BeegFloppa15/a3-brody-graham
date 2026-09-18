@@ -35,13 +35,7 @@ const createNewUser = async function(mongoConnection, req, res, next){
         if (req.body.password !== '')
             newPlayer.password = req.body.password
 
-        const result = await players.insertOne({
-            username: req.body.username,
-            firstname: req.body.firstname, 
-            lastname: req.body.lastname,
-            correct_guesses: 0,
-            total_guesses:0
-        })
+        const result = await players.insertOne(newPlayer)
 
         if (result.acknowledged === true)
             next()
@@ -63,15 +57,16 @@ const createNewUser = async function(mongoConnection, req, res, next){
 const attemptLogin = async function (mongoConnection, req, res, next) {
     const players = mongoConnection.db('math-app').collection('players')
     const targetPlayer = await players.findOne({username: req.body.username})
-    console.log('Attempting to Sign In: ' + targetPlayer.username)
 
+    // Check if Username Exists
     if (targetPlayer === null){
         console.log("NO USER FOUND: LOGIN FAILED")
         res.attempData = req.body
-        res.redirect('/changeinfo.html?user=duplicate')
+        res.redirect(`/login.html?fail=nouser&user=${req.body.username}`)
     }
 
-    if (targetPlayer.password === undefined || req.body.password == targetPlayer.password){
+    // Check if password is correct
+    if (targetPlayer.password === undefined || req.body.password === targetPlayer.password){
         console.log("LOGIN SUCCESSFUL")
         req.session.login = true
         req.session.username = req.body.username
@@ -79,7 +74,7 @@ const attemptLogin = async function (mongoConnection, req, res, next) {
     }
     else{
         console.log('INCORRECT PASSOWRD: LOGIN FAILED')
-        //TODO: Redirect with fail message
+        res.redirect(`/login.html?fail=password&user=${req.body.username}`)
     }
 }
 

@@ -134,8 +134,14 @@ function updateUserInfoDisplay(userData){
   usernameDisplay.innerText = userData.username
   correctDisplay.innerText = `Correct Guesses: ${userData.correct_guesses}`
   totalDisplay.innerText = `Total Guesses: ${userData.total_guesses}`
-  accuracy.innerText = `Accuracy: ${decimalFormat.format(userData.correct_guesses / userData.total_guesses)}`
 
+  let accPerc
+  if (userData.total_guesses > 0)
+    accPerc = userData.correct_guesses / userData.total_guesses
+  else
+    accPerc = 0
+  accuracy.innerText = `Accuracy: ${decimalFormat.format(accPerc)}`
+  document.getElementById('full-name').innerText = `${userData.firstname} ${userData.lastname}`
 }
 
 window.onload = async function() {
