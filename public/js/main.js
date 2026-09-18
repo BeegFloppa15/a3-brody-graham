@@ -131,7 +131,7 @@ function back(){
  * @param {JSON} userData 
  */
 function updateUserInfoDisplay(userData){
-  usernameDisplay.innerText = userData.username
+  usernameDisplay.innerText = `${userData.username}: Modify Profile`
   correctDisplay.innerText = `Correct Guesses: ${userData.correct_guesses}`
   totalDisplay.innerText = `Total Guesses: ${userData.total_guesses}`
 
