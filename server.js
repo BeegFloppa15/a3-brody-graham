@@ -3,7 +3,7 @@ require( 'dotenv' ).config()
 //Importing and creating server
 const express = require( 'express' )
 const app = express()
-const {unauthRedirect, attemptLogin, logout, modifyUser} = require('./javascript/auth')
+const {unauthRedirect, attemptLogin, logout, modifyUser, createNewUser} = require('./javascript/auth')
 const cookie = require('cookie-session')
 
 //Importing and creating MongoDB connection
@@ -214,11 +214,18 @@ app.get('/getPlayerProfile', (req, res, next)=>{
     res.end(JSON.stringify(req.userInfo))
 })
 
-//TODO: Implement User modifying profile
+app.post('/profile/create', (req, res, next) =>{
+    createNewUser(mongoConnection, req, res, next)
+})
+app.post('/profile/create', (req, res, next) =>{
+    attemptLogin(mongoConnection, req, res, next)
+})
+
+//User modifying profile
 app.post('/profile/modify', express.json(), (req, res, next) =>{
     modifyUser(mongoConnection, req, res, next)
 })
-//TODO: Implement User Deleting Profile
+//User Deleting Profile
 app.delete('/profile/delete', async function(req, res){
     const players = mongoConnection.db('math-app').collection('players')
     const targetPlayer = await players.deleteOne({username: req.session.username})

@@ -3,6 +3,57 @@ const {MongoClient} = require("mongodb")
 const path = require('path')
 
 /**
+ * Attempts to add a new user to the databse. If successful, calls next()
+ * @param {MongoClient} mongoConnection 
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ */
+const createNewUser = async function(mongoConnection, req, res, next){
+    console.log('Request to create new user:')
+    console.log(req.body)
+    const players = mongoConnection.db('math-app').collection('players')
+
+    const duplicate = await players.findOne({username: req.body.username})
+    if (duplicate !== null){
+        //Duplicate player username found.
+        console.log('Cannot create new user with duplicate username: ' + req.body.username)
+        res.redirect(`/register.html?user=duplicate`)
+    }
+    else{
+        //Actually add the data
+        let newPlayer = {
+            username: req.body.username, 
+            correct_guesses: 0,
+            total_guesses: 0
+        }
+        
+        if (req.body.firstname !== '')
+            newPlayer.firstname = req.body.firstname
+        if (req.body.lastname !== '')
+            newPlayer.lastname = req.body.lastname
+        if (req.body.password !== '')
+            newPlayer.password = req.body.password
+
+        const result = await players.insertOne({
+            username: req.body.username,
+            firstname: req.body.firstname, 
+            lastname: req.body.lastname,
+            correct_guesses: 0,
+            total_guesses:0
+        })
+
+        if (result.acknowledged === true)
+            next()
+        else{
+            console.log('ERROR: Could not insert new user into database')
+            res.redirect('login.html')
+        }
+        
+    }
+}
+
+/**
  * 
  * @param {MongoClient} mongoConnection 
  * @param {Request} req 
@@ -16,7 +67,8 @@ const attemptLogin = async function (mongoConnection, req, res, next) {
 
     if (targetPlayer === null){
         console.log("NO USER FOUND: LOGIN FAILED")
-        //TODO: redirect with fail message
+        res.attempData = req.body
+        res.redirect('/changeinfo.html?user=duplicate')
     }
 
     if (targetPlayer.password === undefined || req.body.password == targetPlayer.password){
@@ -99,4 +151,4 @@ const logout = function(req, res, next){
     res.redirect('/login.html')
 }
 
-module.exports = {unauthRedirect, attemptLogin, logout, modifyUser}
+module.exports = {unauthRedirect, attemptLogin, logout, modifyUser, createNewUser}
