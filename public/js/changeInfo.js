@@ -16,13 +16,13 @@ window.onload = async function(){
 
     // if user tried to do duplicate username
     const urlInputs = new URLSearchParams(window.location.search)
-    if (urlInputs.get('user') === 'duplicate'){
+    if (urlInputs.has('user')){
         console.log('Duplicate user, showing error')
         firstnameEntry.classList.add('Invalid')
         const usernameDiv = document.getElementById('entire-username-div')
         usernameDiv.classList.add('invalid')
-        usernameDiv.innerHTML = `<input type="text" name="username" value="" aria-label="Username Modify" id = "username-entry">
-              <output class="invalid">That username is already being used. Please try again.</output>`
+        usernameDiv.innerHTML = `<input type="text" name="username" value="${urlInputs.get('user')}" aria-label="Username Modify" id = "username-entry">
+              <output class="invalid">The Username <strong>${urlInputs.get('user')}</strong> is already being used. Please try a different Username.</output>`
     }
     // Set field values to existing values if they exist
     usernameEntry.value = userData.username

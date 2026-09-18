@@ -18,7 +18,7 @@ const createNewUser = async function(mongoConnection, req, res, next){
     if (duplicate !== null){
         //Duplicate player username found.
         console.log('Cannot create new user with duplicate username: ' + req.body.username)
-        res.redirect(`/register.html?user=duplicate`)
+        res.redirect(`/register.html?user=${req.body.username}`)
     }
     else{
         //Actually add the data
@@ -94,7 +94,7 @@ const modifyUser = async function (mongoConnection, req, res, next){
     if (duplicate !== null && duplicate.username !== targetPlayer.username){
         console.log('ERROR: This username is already used')
         res.attempData = req.body
-        res.redirect('/changeinfo.html?user=duplicate')
+        res.redirect(`/changeinfo.html?user=${req.body.username}`)
     }
     
     //Actually Modify User's data

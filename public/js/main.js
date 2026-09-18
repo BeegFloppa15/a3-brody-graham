@@ -44,31 +44,30 @@ const submit = async function( event ) {
   const data = await response.json();
   console.log( 'text:', data );
 
-  //updateLeaderboard(data['all-players'])
   answerProgress.hidden = true
   updateUserInfoDisplay(data.user_data)
 
   if (data.is_correct === "correct"){
-    // Show "Correct" element for 2 seconds
+    // Show "Correct" element for 4 seconds
     clearTimeout(transitionTimer)
     correctResult.classList.add('active')
 
     transitionTimer = setTimeout(function(){
       correctResult.classList.remove('active')
-    }, 2500)
+    }, 4000)
 
     currentProblem = data.problem
     problemElement.innerHTML = data.problem
     
   }
   else{
-    // Show "incorrect" element for 2 seconds
+    // Show "incorrect" element for 4 seconds
     clearTimeout(transitionTimer)
     incorrectResult.classList.add('active')
 
     transitionTimer = setTimeout(function(){
       incorrectResult.classList.remove('active')
-    }, 2500)
+    }, 4000)
 
     currentProblem = data.problem
     problemElement.innerHTML = data.problem
@@ -141,7 +140,7 @@ function updateUserInfoDisplay(userData){
   else
     accPerc = 0
   accuracy.innerText = `Accuracy: ${decimalFormat.format(accPerc)}`
-  document.getElementById('full-name').innerText = `${userData.firstname} ${userData.lastname}`
+  document.getElementById('full-name').innerText = `${userData.firstname || ''} ${userData.lastname || ''}`
 }
 
 window.onload = async function() {
