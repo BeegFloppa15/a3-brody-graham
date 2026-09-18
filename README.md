@@ -92,9 +92,9 @@ Write a paragraph of at least 125 words *for each of the four principles* (four 
 Sample Readme (delete the above when you're ready to submit, and modify the below so with your links and descriptions)
 ---
 
-## Your Web Application Title
+## Math Maker - A Math Quiz App
 
-A link to your project running on render.
+https://a3-brody-graham.onrender.com/login.html
 
 Include a very brief summary of your project here. Images are encouraged, along with concise, high-level text. Be sure to include:
 
@@ -104,10 +104,22 @@ Include a very brief summary of your project here. Images are encouraged, along 
 - what CSS framework you used and why
   - include any modifications to the CSS framework you made via custom CSS you authored
 
-## Technical Achievements
-- **Tech Achievement 1**: I used OAuth authentication via the GitHub strategy
-- **Tech Achievement 2**: Express Middleware Packages Installed and used:
-  - cookie-session
-
 ### Design/Evaluation Achievements
-- **Design Achievement 1**: I followed the following tips from the W3C Web Accessibility Initiative...
+- **Design Achievement 1**: I followed the following tips from the W3C Web Accessibility Initiative:
+  - **Provide informative, unique page titles**: Each Web Page in my app has a title in the format of "*function of website* - Math Maker. The titles are as follows
+    - Login - Math Maker
+    - Register a New Profile - Math Maker
+    - Solve Problems - Math Maker
+    - Change your Profile Info - Math Maker!
+  - **Use headings to convey meaning and structure**: The Login and Profile Edit page has headers to seperate different forms. Login Page uses Headers to seperate Login and Register forms, and Profile Edit page has headers to seperate the edit form and the delete profile button.
+
+## Technical Achievements
+- **Tech Achievement 1**: Express Middleware Packages Installed and used:
+  - cookie-session: Used for tracking if a user is logged in and authenticated. Session cookies keep track of the username, and uses it to fetch database data. 
+
+- **Tech Achievement 2**: I achieved 100% on all Lighthouse Categories for all available webpages. See the images below.
+
+![Lighthouse score on Login Page](ReadeMePics\LoginScore.png)
+![Lighthouse score on Account Registration Page](ReadeMePics\RegisterScore.png)
+![Lighthouse score on Main Game Page](ReadeMePics\MainGameScore.png)
+![Lighthouse score on Edit Profile Page](ReadeMePics\CHangeInfoScore.png)
